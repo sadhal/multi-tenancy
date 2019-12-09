@@ -22,12 +22,16 @@ spec:
         - name: git-key
           secret:
             secretName: flux-git-deploy
-            defaultMode: 0400
+            defaultMode: 256
+            # defaultMode: 0400  https://github.com/fluxcd/flux/issues/1125#issuecomment-514786291
         - name: git-keygen
           emptyDir:
             medium: Memory
       containers:
         - name: flux
+          # Openshift adjustment - https://github.com/fluxcd/flux/issues/1125#issuecomment-469163115
+          securityContext:
+            runAsUser: 0
           image: fluxcd/flux:1.15.0
           imagePullPolicy: IfNotPresent
           ports:
